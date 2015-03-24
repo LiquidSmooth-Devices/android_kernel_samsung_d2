@@ -1749,6 +1749,7 @@ static int msm_close(struct file *f)
 		rc = msm_cam_server_close_session(&g_server_dev, pcam);
 		if (rc < 0)
 			pr_err("msm_cam_server_close_session fails %d\n", rc);
+		pcam->mctl.mctl_cmd = NULL; /* QC-Patch */
 		pr_err("%s releasing pcam->mctl\n", __func__);
 		if (pcam->mctl.mctl_release) {
 			rc = pcam->mctl.mctl_release(&(pcam->mctl));
@@ -2333,13 +2334,11 @@ static int msm_setup_v4l2_event_queue(struct v4l2_fh *eventHandle,
 #if 0	
 	if (rc < 0)
 		return rc;
-
 	if (eventHandle->events == NULL) {
 		rc = v4l2_event_init(eventHandle);
 		if (rc < 0)
 			return rc;
 	}
-
 	/* queue of max size 30 */
 	rc = v4l2_event_alloc(eventHandle, 30);
 	if (rc < 0)
